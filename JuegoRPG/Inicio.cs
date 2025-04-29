@@ -17,16 +17,16 @@ namespace practicarUNI.Juego
             Console.Write("Usted tiene para escoger tres clases base: ");
             Console.WriteLine("--------------------------------------------");
 
-            Console.Write("Presione 1 para seleccionar al Caballero.");
+            Console.Write("Presione 1 para seleccionar al: ");
             Caballero.MostrarEstadisticasBase();
             Console.WriteLine();
 
-            Console.Write("Presione 2 para seleccionar al Mago.");
+            Console.Write("Presione 2 para seleccionar al: ");
             Mago.MostrarEstadisticasBase();
             Console.WriteLine();
 
 
-            Console.Write("Presione 3 para seleccionar al Asesino.");
+            Console.Write("Presione 3 para seleccionar al: ");
             Asesino.MostrarEstadisticasBase();
             Console.WriteLine();
 
@@ -133,15 +133,7 @@ namespace practicarUNI.Juego
         {
             foreach (var enemigo in enemigos)
             {
-                if (enemigo.Acciones_Enemigo != null && enemigo.Acciones_Enemigo.Count > 0)
-                {
-                    // Elegir una acción al azar del diccionario
-                    var accionesDisponibles = enemigo.Acciones_Enemigo.ToList();
-                    var accionAleatoria = accionesDisponibles[new Random().Next(accionesDisponibles.Count)];
-
-                    Console.WriteLine($"{enemigo.Nombre} usa {accionAleatoria.Key} contra el jugador.");
-                    accionAleatoria.Value.Invoke(personaje); // Ejecutar acción
-                }
+                enemigo.ElegirAccion_Enemigo(personaje, enemigos);
             }
         }
 

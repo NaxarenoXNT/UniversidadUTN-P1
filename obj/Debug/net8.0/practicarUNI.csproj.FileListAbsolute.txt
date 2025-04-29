@@ -1,0 +1,14 @@
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\bin\Debug\net8.0\practicarUNI.exe
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\bin\Debug\net8.0\practicarUNI.deps.json
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\bin\Debug\net8.0\practicarUNI.runtimeconfig.json
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\bin\Debug\net8.0\practicarUNI.dll
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\bin\Debug\net8.0\practicarUNI.pdb
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.AssemblyInfoInputs.cache
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.AssemblyInfo.cs
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.csproj.CoreCompileInputs.cache
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.dll
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\refint\practicarUNI.dll
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.pdb
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.genruntimeconfig.cache
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\ref\practicarUNI.dll
