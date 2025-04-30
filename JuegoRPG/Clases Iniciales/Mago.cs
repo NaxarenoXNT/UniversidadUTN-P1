@@ -12,15 +12,17 @@ namespace practicarUNI.JuegoRPG.Clases_Iniciales
         public Mago(): base("Mago", Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
             Acciones = new Dictionary<string, Action<Enemigo>>();
+            AccionesSinObjetivo = new Dictionary<string, Action>();
 
             Acciones.Add("Atacar", enemigo => Atacar(enemigo)); 
-            Acciones.Add("Curarse", enemigo => Curarse());
-            Acciones.Add("Defenderse", enemigo => Defenderse());
+
+            AccionesSinObjetivo.Add("Curarse", () => Curarse());
+            AccionesSinObjetivo.Add("Defenderse", () => Defenderse());
         }
 
         protected override void Atacar(Enemigo enemigo)
         {
-            enemigo.RecibirDaño(Jugador_Daño);
+            enemigo.RecibirDaño(Jugador_Daño, this);
         }
         protected override void Defenderse()
         {

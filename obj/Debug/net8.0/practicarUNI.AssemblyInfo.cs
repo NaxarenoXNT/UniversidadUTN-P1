@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("practicarUNI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f17d95e3d0d8a9ac0649a04fdcc3e0cdbe313262")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f5996eac46f63ee640fdfa9786a5f4a4a8194407")]
 [assembly: System.Reflection.AssemblyProductAttribute("practicarUNI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("practicarUNI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

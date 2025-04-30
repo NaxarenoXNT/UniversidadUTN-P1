@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace MiProyecto.PuntosTP
 {
-    public class PuntosTPs()
+    public class PuntosTPs
     {
         public void ejercicio5()
         {
@@ -197,6 +197,43 @@ namespace MiProyecto.PuntosTP
                 
             }
             Console.WriteLine($"Lo que usted ingreso posee un total de {cantidadPalabras+1} palabras con un total de {contador} letras en total.");
+        }
+        public void Matrices1()
+        {
+            bool encontrado= false;
+            int posicion=-1;
+            int[] listado = new int[10];
+            Random aleatorio = new Random();
+
+            for(int i=0; i< listado.Length; i++)
+            {
+                listado[i] = aleatorio.Next(1,21);
+            }
+            int usuario;
+            do
+            {
+            Console.WriteLine("Deme un numero par aver si se encuentra en la matriz: ");
+            usuario= int.Parse(Console.ReadLine()??"0");
+
+            for(int i=0; i<listado.Length; i++)
+            {
+                if(listado[i] == usuario)
+                {
+                    encontrado = true;
+                    posicion =i;
+                    break;
+                }
+            }
+            if(encontrado)
+            {
+                Console.WriteLine($"El numero {usuario} fue encontrado en la posicion {posicion}");
+            }
+            else
+            {
+                Console.WriteLine("Su numero no se encuentra dentro del array");
+            }
+            }while(usuario>0);
+            
         }
     }
 

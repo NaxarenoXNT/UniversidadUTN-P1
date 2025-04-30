@@ -8,7 +8,7 @@ namespace practicarUNI.Juego.padres
 {
     public class Enemigo
     {
-        public bool EnemigoDerrotado=>Enemigo_VidaToatal<=0;
+        public bool EnemigoDerrotado= false;
         public bool EstaDefendiendose { get; set; } = false;
         protected double Enemigo_VidaToatal{get; set;}
         protected double Enemigo_VidaActual{get; set;}
@@ -17,7 +17,7 @@ namespace practicarUNI.Juego.padres
 
         protected string Enemigo_Nombre{get; set;}
         public string Nombre => Enemigo_Nombre;      //estas simplemente estan declaradas para que sean accesibles desde funciones de gestion
-        public double VidaActual => Enemigo_VidaToatal;  // lo mismo con esta
+        public double VidaActual => Enemigo_VidaActual;  // lo mismo con esta
 
 
         int Enemigo_Nivel{get; set;}
@@ -65,13 +65,10 @@ namespace practicarUNI.Juego.padres
             }
 
         protected void DropXP(Personaje personaje)
-            {
-                if(EnemigoDerrotado)
-                {
-                    personaje.REcibirXP(true, Enemigo_ExpDrop);
-                    Console.WriteLine($"El Enemigo solto {Enemigo_ExpDrop} puntos de experiencia!");
-                }
-            }
+        {
+        personaje.RecibirXP(Enemigo_ExpDrop);
+        Console.WriteLine($"El Enemigo solto {Enemigo_ExpDrop} puntos de experiencia!");
+        }
         protected virtual int CalcularExpDrop()
             {
                 return 25 + (Enemigo_Nivel * 5);
@@ -95,7 +92,7 @@ namespace practicarUNI.Juego.padres
         }
         
 
-        public void RecibirDaño(int Jugador_Daño)
+        public void RecibirDaño(int Jugador_Daño, Personaje personaje)
         {
             double DañoMitigado= Jugador_Daño;
 
@@ -110,6 +107,13 @@ namespace practicarUNI.Juego.padres
             Enemigo_VidaActual -= DañoFinal;
 
             Console.WriteLine($"El enemigo recibio {DañoFinal} de daño. Vida restante: {Enemigo_VidaActual}");
+
+            if (Enemigo_VidaActual <= 0 && !EnemigoDerrotado)
+            {
+                EnemigoDerrotado = true;
+                Console.WriteLine("¡¡Enemigo Derrotado!!");
+                DropXP(personaje); 
+            }
         }
 
         public virtual void EnemigoSeCura()
@@ -121,7 +125,7 @@ namespace practicarUNI.Juego.padres
 
     }
 
-    //me falta crear el diccionary con las acciones de cada clase hija
+    
     //me falta independizar cada subclase(tal como realize con las clases de personaje) (ya casi esta)
 
 
@@ -132,7 +136,11 @@ namespace practicarUNI.Juego.padres
 
     public class Zombie: Enemigo
     {
+        private int cargasCuracionEnemigo=0;
+        private int cargasParaLlamarAliado=1;
+
         public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(100,10,0);
+
         public Zombie(int Jugador_Nivel): base("Zombie" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
             SubirNivelEnemigo(Jugador_Nivel);
@@ -143,6 +151,24 @@ namespace practicarUNI.Juego.padres
         {
             Console.WriteLine("El Enemigo realizo un ataque!");
             personaje.RecibirDaño(Enemigo_Daño);
+        }
+        public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
+        {
+            bool NoMasCuras = cargasCuracionEnemigo>=2;
+            bool NoMasAliados = cargasParaLlamarAliado<1;
+
+
+            if(Enemigo_VidaActual> Enemigo_VidaToatal*0.50 || NoMasCuras || NoMasAliados)
+            {
+                Atacar(personaje);
+            }
+            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
+            {
+                EnemigoSeCura();
+                cargasCuracionEnemigo++;
+            }
+            
+            
         }
     }
 
@@ -201,7 +227,6 @@ namespace practicarUNI.Juego.padres
             }
         }
 
-
         public void LLamarAliado(List<Enemigo> enemigos ,int Jugador_Nivel)
         {
             Console.WriteLine("¡¡El enemigo está llamando refuerzos!!");
@@ -224,7 +249,11 @@ namespace practicarUNI.Juego.padres
 
     public class Elemental: Enemigo
     {
+        private int cargasCuracionEnemigo=0;
+        private int cargasParaLlamarAliado=1;
+
         public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(50,100,0);
+
         public Elemental(int Jugador_Nivel): base("Elemental" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
             SubirNivelEnemigo(Jugador_Nivel);
@@ -235,6 +264,24 @@ namespace practicarUNI.Juego.padres
         {
             Console.WriteLine("El Enemigo realizo un ataque!");
             personaje.RecibirDaño(Enemigo_Daño);
+        }
+        public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
+        {
+            bool NoMasCuras = cargasCuracionEnemigo>=2;
+            bool NoMasAliados = cargasParaLlamarAliado<1;
+
+
+            if(Enemigo_VidaActual> Enemigo_VidaToatal*0.50 || NoMasCuras || NoMasAliados)
+            {
+                Atacar(personaje);
+            }
+            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
+            {
+                EnemigoSeCura();
+                cargasCuracionEnemigo++;
+            }
+            
+            
         }
     }
 }

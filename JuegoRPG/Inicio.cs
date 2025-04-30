@@ -67,64 +67,72 @@ namespace practicarUNI.Juego
     {
         public void AccionesCombate(Personaje personaje, List<Enemigo> enemigos)
         {
-        Console.WriteLine("¿Qué acción quiere tomar?");
-    
-        int opcion = 1;
-        List<string> listaAcciones = new List<string>();
-
-        foreach (var accion in personaje.Acciones.Keys)
-        {
-            Console.WriteLine($"{opcion}. {accion}");
-            listaAcciones.Add(accion);
-            opcion++;
-        }
-    
-        Console.Write("Elija su opción: ");
-        string input = Console.ReadLine()??"1";   //realiza la primer accion en caso de no seleccionar nada
-        int eleccion;
-
-        if (int.TryParse(input, out eleccion))
-        {
-        if (eleccion >= 1 && eleccion <= listaAcciones.Count)
-        {
-            string nombreAccion = listaAcciones[eleccion - 1];
-            Action<Enemigo> accionSeleccionada = personaje.Acciones[nombreAccion];
-
-            Console.WriteLine("¿A qué enemigo quieres atacar?");
-            for (int i = 0; i < enemigos.Count; i++)
+            Console.WriteLine("¿Qué acción quiere tomar?");
+            
+            int opcion = 1;
+            List<string> listaAcciones = new List<string>();
+            Dictionary<int, string> mapaOpciones = new Dictionary<int, string>();
+            
+            foreach (var accion in personaje.Acciones.Keys)
             {
-                Console.WriteLine($"{i + 1}. {enemigos[i].Nombre} (HP: {enemigos[i].VidaActual})");
+                Console.WriteLine($"{opcion}. {accion}");
+                mapaOpciones.Add(opcion, accion + " Objetivo Requerido");
+                listaAcciones.Add(accion);
+                opcion++;
             }
 
-            string inputEnemigo = Console.ReadLine()??"1"; //ataca al primer enemigo en caso de no elegir nada
-            int eleccionEnemigo;
-
-            if (int.TryParse(inputEnemigo, out eleccionEnemigo))
+            foreach (var accion in personaje.AccionesSinObjetivo.Keys)
             {
-                if (eleccionEnemigo >= 1 && eleccionEnemigo <= enemigos.Count)
+                Console.WriteLine($"{opcion}. {accion}");
+                mapaOpciones.Add(opcion, accion + " (A Ti Mismo)");
+                listaAcciones.Add(accion);
+                opcion++;
+            }
+
+            Console.Write("Elija su opción: ");
+            string input = Console.ReadLine() ?? "1";
+            int eleccion;
+
+            if (int.TryParse(input, out eleccion) && mapaOpciones.ContainsKey(eleccion))
+            {
+                string accionCompuesta = mapaOpciones[eleccion];
+
+                if (accionCompuesta.EndsWith(" Objetivo Requerido"))
                 {
-                    accionSeleccionada(enemigos[eleccionEnemigo - 1]);
+                    string nombreAccion = accionCompuesta.Replace(" Objetivo Requerido", "");
+                    Action<Enemigo> accionSeleccionada = personaje.Acciones[nombreAccion];
+
+                    Console.WriteLine("¿A qué enemigo quieres atacar?");
+                    for (int i = 0; i < enemigos.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {enemigos[i].Nombre} (HP: {enemigos[i].VidaActual})");
+                    }
+
+                    string inputEnemigo = Console.ReadLine() ?? "1";
+                    int eleccionEnemigo;
+
+                    if (int.TryParse(inputEnemigo, out eleccionEnemigo) && eleccionEnemigo >= 1 && eleccionEnemigo <= enemigos.Count)
+                    {
+                        accionSeleccionada(enemigos[eleccionEnemigo - 1]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Enemigo inválido, turno perdido.");
+                    }
                 }
-                else
+                else if (accionCompuesta.EndsWith(" (A Ti Mismo)"))
                 {
-                    Console.WriteLine("Enemigo inválido, turno perdido.");
+                    string nombreAccion = accionCompuesta.Replace(" (A Ti Mismo)", "");
+                    Action accionSeleccionada = personaje.AccionesSinObjetivo[nombreAccion];
+                    accionSeleccionada();
                 }
             }
             else
             {
-                Console.WriteLine("Selección inválida, turno perdido.");
-            }
-            }
-            else
-            {
-                Console.WriteLine("Acción inválida, turno perdido.");
+                Console.WriteLine("Acción inválida. Turno perdido.");
             }
         }
-        else
-        {
-            Console.WriteLine("Acción no válida. Turno perdido.");
-        }
-        }
+
 
 
 
@@ -159,7 +167,7 @@ namespace practicarUNI.Juego
                 Console.WriteLine("--- Turno De los Enemigos ---");
                 foreach(var enemigo in enemigos)
                 {
-                    AccionesCombateEnemigo(enemigos, personaje); //una ves que prepare la logica del combate del enemigo tengo que llenar esto
+                    AccionesCombateEnemigo(enemigos, personaje); 
                 }
 
                 if(personaje.JugadorDerrotado)

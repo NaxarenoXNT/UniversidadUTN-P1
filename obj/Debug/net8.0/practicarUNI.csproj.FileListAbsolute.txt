@@ -12,3 +12,4 @@ C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\refint\practica
 C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.pdb
 C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.genruntimeconfig.cache
 C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\ref\practicarUNI.dll
+C:\Users\nazar\OneDrive\Escritorio\practicarUNI\obj\Debug\net8.0\practicarUNI.sourcelink.json

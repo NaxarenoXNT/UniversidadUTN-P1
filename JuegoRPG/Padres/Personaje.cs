@@ -20,7 +20,7 @@ namespace practicarUNI.Juego.padres
         public int Nivel => Jugador_Nivel;   //para que pueda ser accedido desde el inicio
 
         public Dictionary<string,Action<Enemigo>> Acciones{get; set;}= new Dictionary<string, Action<Enemigo>>(); //basicamente guarda un string(nombre del metodo) y recibe un enmigo para ejecutar un metodo
-        
+        public Dictionary<string,Action> AccionesSinObjetivo{get; set;} = new Dictionary<string, Action>();  //lo mismo que el otro diccionario pero este no requiere de un enemigo
 
         public Personaje(string nombre ,int VidaInicial, int DañoInicial, int DefensaInicial)
         {
@@ -37,8 +37,6 @@ namespace practicarUNI.Juego.padres
             Console.Write($"Sus estadisticas son: {Jugador_VidaToatal} puntos de vida, {Jugador_Daño} puntos de daño, {Jugador_Defensa} puntos de defensa");
             Console.WriteLine($"");
         }
-
-
         protected void EscaladoNivel_Jugador(int Jugador_Nivel)
         {
             Jugador_Daño+= Jugador_Nivel*(10);
@@ -59,27 +57,19 @@ namespace practicarUNI.Juego.padres
                 TopeEXP_Jugador=100+(Jugador_Nivel*25);
             }
         }
-        public void REcibirXP(bool EnemigoDerrotado, int Enemigo_ExpDrop)
+        public void RecibirXP(int Enemigo_ExpDrop)
         {
-            if (EnemigoDerrotado)
-            {
-                SubirNivel(Enemigo_ExpDrop);
-            }
+            SubirNivel(Enemigo_ExpDrop);
         }
-        
         public void RecibirDaño_deEnemigo(int Enemigo_Daño, string Enemigo_Nombre)
         {
         int DañoFinal = Math.Max(Enemigo_Daño - Jugador_Defensa,0);
         Jugador_VidaToatal -= DañoFinal;
         Console.WriteLine($"El {Enemigo_Nombre} te infligio {DañoFinal} de daño. Vida restante: {Jugador_VidaToatal}");
         }
-
         protected abstract void Atacar(Enemigo enemigo);
         protected abstract void Defenderse();
         protected abstract void Curarse();
-        
-        
-
         public void RecibirDaño(int Enemigo_Daño)
         {
         int DañoFinal = Math.Max(Enemigo_Daño - Jugador_Defensa,0);
