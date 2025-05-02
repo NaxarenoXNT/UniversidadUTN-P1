@@ -8,7 +8,7 @@ namespace practicarUNI.JuegoRPG.Clases_Iniciales
 {
     public class Mago:Personaje
     {
-        public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(100,50,10);
+        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(100.0, 50.0, 10.0);
         public Mago(): base("Mago", Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
             Acciones = new Dictionary<string, Action<Enemigo>>();
@@ -26,7 +26,8 @@ namespace practicarUNI.JuegoRPG.Clases_Iniciales
         }
         protected override void Defenderse()
         {
-            
+            DefenderceDeEnemigo = true;
+            Console.WriteLine("Te Defiendes del siguiente ataque.");
         }
         protected override void Curarse()
         {
@@ -37,6 +38,17 @@ namespace practicarUNI.JuegoRPG.Clases_Iniciales
         public static void MostrarEstadisticasBase()
         {
         Console.WriteLine($"El Mago posee: - Vida: {Estadisticasbase.vida}, Daño: {Estadisticasbase.daño}, Defensa: {Estadisticasbase.defensa}");
+        }
+        protected override void EscaladoNivel_Jugador(int Jugador_Nivel)
+        {
+            Jugador_Daño+= Jugador_Nivel*(25);
+            Jugador_VidaToatal+= Jugador_Nivel*(110);
+            Jugador_Defensa+= Jugador_Nivel*(1.7);
+        }
+        protected override void InicializarModificadoresEstado()
+        {
+            base.InicializarModificadoresEstado();
+            //aca tendria que ir agregando que estadisticas se pueden cambiar con los eventos
         }
     }
 }

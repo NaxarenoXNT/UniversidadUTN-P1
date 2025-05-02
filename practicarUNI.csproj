@@ -7,4 +7,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+  <PackageReference Include="System.Text.Json" Version="7.0.2" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <EmbeddedResource Include="JuegoRPG/TodoEventos/eventos.json" />
+  </ItemGroup>
+
+
 </Project>

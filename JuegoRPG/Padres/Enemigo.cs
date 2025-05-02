@@ -12,7 +12,7 @@ namespace practicarUNI.Juego.padres
         public bool EstaDefendiendose { get; set; } = false;
         protected double Enemigo_VidaToatal{get; set;}
         protected double Enemigo_VidaActual{get; set;}
-        protected int Enemigo_Daño{get; set;}
+        protected double Enemigo_Daño{get; set;}
         protected double Enemigo_Defensa{get; set;}
 
         protected string Enemigo_Nombre{get; set;}
@@ -20,7 +20,10 @@ namespace practicarUNI.Juego.padres
         public double VidaActual => Enemigo_VidaActual;  // lo mismo con esta
 
 
-        int Enemigo_Nivel{get; set;}
+        public int Enemigo_Nivel{get; set;}
+        public int Nivel => Enemigo_Nivel;
+        
+        
         protected int Enemigo_ExpDrop{get; set;}
 
         public List<Enemigo> ListaEnemigos = new List<Enemigo>();
@@ -28,11 +31,11 @@ namespace practicarUNI.Juego.padres
         
 
 
-        public Enemigo(string nombre , int VidaInicial, int DañoInicial, int DefensaInicial)
+        public Enemigo(string nombre , double VidaInicial, double DañoInicial, double DefensaInicial)
         {
             Enemigo_Nombre=nombre;
             Enemigo_VidaToatal=VidaInicial;
-            Enemigo_Daño=DañoInicial;
+            Enemigo_VidaActual = VidaInicial;
             Enemigo_Defensa=DefensaInicial;
             ListaEnemigos.Add(this); //agregas las clases que herende de padre
 
@@ -42,27 +45,22 @@ namespace practicarUNI.Juego.padres
 
         public virtual void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo>enemigos)
         {
-            /*
-         if(Acciones_Enemigo.ContainsKey("Atacar"))
-        {
-            Acciones_Enemigo["Atacar"](personaje);
-        }
-            */
+         
         }    
 
 
         protected void SubirNivelEnemigo(int Jugador_Nivel)
-            {
-                int minimo = Jugador_Nivel - 10;
-                if (minimo < 1) minimo = 1;
+        {
+            int minimo = Jugador_Nivel - 5;
+            if (minimo < 1) minimo = 1;
 
-                int maximo = Jugador_Nivel + 10;
+            int maximo = Jugador_Nivel + 5;
 
-                Random random = new Random();
-                Enemigo_Nivel = random.Next(minimo, maximo + 1); 
+            Random random = new Random();
+            Enemigo_Nivel = random.Next(minimo, maximo + 1); 
 
-                Enemigo_ExpDrop = CalcularExpDrop();
-            }
+            Enemigo_ExpDrop = CalcularExpDrop();
+        }
 
         protected void DropXP(Personaje personaje)
         {
@@ -70,16 +68,17 @@ namespace practicarUNI.Juego.padres
         Console.WriteLine($"El Enemigo solto {Enemigo_ExpDrop} puntos de experiencia!");
         }
         protected virtual int CalcularExpDrop()
-            {
-                return 25 + (Enemigo_Nivel * 5);
-            }
+        {
+            return 25 + (Enemigo_Nivel * 5);
+        }
 
         protected void EscaladoNivel_Enemigo()
-            {
-                Enemigo_Daño+= Enemigo_Nivel*(2);
-                Enemigo_VidaToatal+= Enemigo_Nivel*(10);
-                Enemigo_Defensa+= Enemigo_Nivel*(1.25);
-            }
+        {
+            Enemigo_Daño+= Enemigo_Nivel*(10);
+            Enemigo_VidaToatal+= Enemigo_Nivel*(20);
+            Enemigo_VidaActual+= Enemigo_Nivel*(20);
+            Enemigo_Defensa+= Enemigo_Nivel*(1.25);
+        }
 
         public virtual void Atacar(Personaje personaje)
         {
@@ -92,7 +91,7 @@ namespace practicarUNI.Juego.padres
         }
         
 
-        public void RecibirDaño(int Jugador_Daño, Personaje personaje)
+        public void RecibirDaño(double Jugador_Daño, Personaje personaje)
         {
             double DañoMitigado= Jugador_Daño;
 
@@ -118,10 +117,11 @@ namespace practicarUNI.Juego.padres
 
         public virtual void EnemigoSeCura()
         {
-            double curacion = 50+(5*Enemigo_Nivel);
+            double curacion = 20+(5*Enemigo_Nivel);
             Enemigo_VidaActual+= curacion;
             Console.WriteLine($"El enemigo se curo un total de {curacion} y ahora posee {Enemigo_VidaActual} puntos de vida.");
         }
+        
 
     }
 
@@ -136,10 +136,8 @@ namespace practicarUNI.Juego.padres
 
     public class Zombie: Enemigo
     {
-        private int cargasCuracionEnemigo=0;
-        private int cargasParaLlamarAliado=1;
 
-        public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(100,10,0);
+        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(100.0, 40.0, 0);
 
         public Zombie(int Jugador_Nivel): base("Zombie" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
@@ -150,25 +148,11 @@ namespace practicarUNI.Juego.padres
         public override void Atacar(Personaje personaje)
         {
             Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño);
+            personaje.RecibirDaño(Enemigo_Daño, this);
         }
         public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
         {
-            bool NoMasCuras = cargasCuracionEnemigo>=2;
-            bool NoMasAliados = cargasParaLlamarAliado<1;
-
-
-            if(Enemigo_VidaActual> Enemigo_VidaToatal*0.50 || NoMasCuras || NoMasAliados)
-            {
-                Atacar(personaje);
-            }
-            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
-            {
-                EnemigoSeCura();
-                cargasCuracionEnemigo++;
-            }
-            
-            
+         Atacar(personaje);
         }
     }
 
@@ -182,7 +166,7 @@ namespace practicarUNI.Juego.padres
         private int cargasCuracionEnemigo=0;
         private int cargasParaLlamarAliado=1;
 
-        public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(100,20,20);
+        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(100.0, 40.0, 20.0);
         public Humano(int Jugador_Nivel): base("humano" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
             SubirNivelEnemigo(Jugador_Nivel);
@@ -192,7 +176,7 @@ namespace practicarUNI.Juego.padres
         public override void Atacar(Personaje personaje)
         {
             Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño);
+            personaje.RecibirDaño(Enemigo_Daño, this);
         }
 
         public override void DefenderceEnemigo()
@@ -203,29 +187,33 @@ namespace practicarUNI.Juego.padres
 
         public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
         {
-            bool NoMasCuras = cargasCuracionEnemigo>=2;
-            bool NoMasAliados = cargasParaLlamarAliado<1;
+            bool NoMasCuras = cargasCuracionEnemigo >= 2;
+            bool NoMasAliados = cargasParaLlamarAliado < 1;
 
-
-            if(Enemigo_VidaActual> Enemigo_VidaToatal*0.50 || NoMasCuras || NoMasAliados)
-            {
-                Atacar(personaje);
-            }
-            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
+            
+            if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.50 && !NoMasCuras)
             {
                 EnemigoSeCura();
                 cargasCuracionEnemigo++;
             }
-            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && NoMasCuras)
-            {
-                DefenderceEnemigo();
-            }
-            else if(Enemigo_VidaActual == Enemigo_VidaToatal*0.25 && NoMasCuras && NoMasAliados)
+            
+            else if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.25 && !NoMasAliados)
             {
                 LLamarAliado(enemigos, personaje.Nivel);
                 cargasParaLlamarAliado--;
             }
+            
+            else if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.50 && NoMasCuras && NoMasAliados)
+            {
+                DefenderceEnemigo();
+            }
+            
+            else
+            {
+                Atacar(personaje);
+            }
         }
+
 
         public void LLamarAliado(List<Enemigo> enemigos ,int Jugador_Nivel)
         {
@@ -252,7 +240,7 @@ namespace practicarUNI.Juego.padres
         private int cargasCuracionEnemigo=0;
         private int cargasParaLlamarAliado=1;
 
-        public static(int vida, int daño, int defensa) Estadisticasbase{get;} =(50,100,0);
+        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(50.0, 200.0, 0);
 
         public Elemental(int Jugador_Nivel): base("Elemental" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
         {
@@ -263,7 +251,7 @@ namespace practicarUNI.Juego.padres
         public override void Atacar(Personaje personaje)
         {
             Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño);
+            personaje.RecibirDaño(Enemigo_Daño, this);
         }
         public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
         {
@@ -271,14 +259,15 @@ namespace practicarUNI.Juego.padres
             bool NoMasAliados = cargasParaLlamarAliado<1;
 
 
-            if(Enemigo_VidaActual> Enemigo_VidaToatal*0.50 || NoMasCuras || NoMasAliados)
-            {
-                Atacar(personaje);
-            }
-            else if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
+            
+            if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
             {
                 EnemigoSeCura();
                 cargasCuracionEnemigo++;
+            }
+            else
+            {
+                Atacar(personaje);
             }
             
             
