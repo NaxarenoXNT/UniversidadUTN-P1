@@ -12,7 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <EmbeddedResource Include="JuegoRPG/TodoEventos/eventos.json" />
+    <EmbeddedResource Include="JuegoRPG/TodoEventos/ArchivosEventos\*.json" />
   </ItemGroup>
 
 

@@ -1,0 +1,200 @@
+[
+    {
+      "ID": "inicio_mago",
+      "Descripcion": "Los libros de la biblioteca de la Torre de Hechicería están esparcidos por tu mesa. Tu maestro te ha encomendado encontrar un antiguo artefacto de poder.",
+      "Opciones": [
+        {
+          "Texto": "Investigar en los libros antiguos",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 5
+            },
+            "SiguienteEventoID": "investigacion_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Consultar a otros magos",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "consulta_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Torre de Hechicería"
+    },
+    {
+      "ID": "investigacion_mago",
+      "Descripcion": "Descubres en un antiguo grimorio que el artefacto está oculto en unas ruinas al norte, pero está custodiado por criaturas peligrosas.",
+      "Opciones": [
+        {
+          "Texto": "Preparar hechizos de combate",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 15
+            },
+            "SiguienteEventoID": "viaje_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Buscar hechizos de protección",
+          "Resultado": {
+            "CambiosEstado": {
+              "Defensa": 15
+            },
+            "SiguienteEventoID": "viaje_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Biblioteca Arcana"
+    },
+    {
+      "ID": "evento_mago_grimorio",
+      "Descripcion": "En una tienda de curiosidades encuentras un grimorio antiguo con hechizos olvidados.",
+      "Opciones": [
+        {
+          "Texto": "Comprar el grimorio (40 monedas)",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": -40,
+              "Daño": 20
+            },
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Investigar su procedencia",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "evento_mago_ritual",
+            "CompletarEvento": false,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Tienda de curiosidades"
+    },
+    {
+      "ID": "evento_mago_ritual",
+      "Descripcion": "Descubres un antiguo círculo ritual en un claro del bosque. Los símbolos arcanos brillan tenuemente bajo la luz de la luna.",
+      "Opciones": [
+        {
+          "Texto": "Intentar completar el ritual",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 15,
+              "Defensa": -5
+            },
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Estudiar el ritual sin completarlo",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 5,
+              "Defensa": 5
+            },
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Claro del Bosque Arcano"
+    },
+    {
+      "ID": "consulta_mago",
+      "Descripcion": "Los otros magos de la torre comparten su conocimiento sobre el artefacto. Parece ser una reliquia de gran poder que podría desestabilizar el equilibrio arcano si cae en manos equivocadas.",
+      "Opciones": [
+        {
+          "Texto": "Solicitar ayuda de un mago experimentado",
+          "Resultado": {
+            "CambiosEstado": {
+              "Defensa": 10
+            },
+            "SiguienteEventoID": "investigacion_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Ofrecer compartir el descubrimiento a cambio de conocimiento",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 10
+            },
+            "SiguienteEventoID": "investigacion_mago",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Salón de los Arcanistas"
+    },
+    {
+      "ID": "viaje_mago",
+      "Descripcion": "Emprendes el viaje hacia las ruinas del norte. El camino está lleno de peligros arcanos y criaturas extrañas.",
+      "Opciones": [
+        {
+          "Texto": "Viajar discretamente",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "evento_mago_grimorio",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Usar magia para acelerar el viaje",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": -5
+            },
+            "SiguienteEventoID": "evento_comun_combate",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Camino a las ruinas"
+    },
+    {
+      "ID": "evento_comun_combate",
+      "Descripcion": "Monstruos an aparecido en el bosque cercano. Debes decidir si enfrentarlos o evitarlos.",
+      "Opciones": [
+        {
+          "Texto": "Aceptar el desafio",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "",
+            "IniciarCombate": true,
+            "CompletarEvento": true
+          }
+        },
+        {
+          "Texto": "Evitar el combate",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": -100
+            },
+            "SiguienteEventoID": "",
+            "IniciarCombate": false,
+            "CompletarEvento": true
+          }
+        }
+      ],
+      "Ubicacion": "Punto de encuentro secreto"
+    }
+  ]

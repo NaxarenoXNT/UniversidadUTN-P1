@@ -1,0 +1,80 @@
+  
+  
+/*
+
+
+public void CargarEventosDesdeJSON()
+        {
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                var recursos = assembly.GetManifestResourceNames();
+
+                Console.WriteLine("Buscando recursos disponibles...");
+
+                if (recursos.Length == 0)
+                {
+                    Console.WriteLine("¡No se encontraron recursos incrustados!");
+                }
+                else
+                {
+                    Console.WriteLine("Recursos encontrados:");
+                    foreach (var recurso in recursos)
+                    {
+                        Console.WriteLine($"- {recurso}");
+                    }
+
+                    // Busca recursos que contengan "ArchivosEventos" y terminen en ".json"
+                    var eventosResources = recursos.Where(r => r.Contains("ArchivosEventos") && r.EndsWith(".json"));
+
+                    if (!eventosResources.Any())
+                    {
+                        Console.WriteLine("No se encontraron recursos JSON de eventos.");
+                        CrearEventosPorDefecto();
+                        return;
+                    }
+
+                    foreach (var recursoJson in eventosResources)
+                    {
+                        Console.WriteLine($"Intentando cargar: {recursoJson}");
+
+                        using (Stream? stream = assembly.GetManifestResourceStream(recursoJson))
+                        {
+                            if (stream == null)
+                            {
+                                Console.WriteLine($"No se pudo abrir el recurso: {recursoJson}");
+                                continue;
+                            }
+
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                string json = reader.ReadToEnd();
+                                List<Evento>? listaEventos = System.Text.Json.JsonSerializer.Deserialize<List<Evento>>(json);
+
+                                if (listaEventos != null)
+                                {
+                                    foreach (var evento in listaEventos)
+                                    {
+                                        _eventos[evento.ID] = evento;
+                                    }
+                                    Console.WriteLine($"Se cargaron {listaEventos.Count} eventos desde {recursoJson}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"No se pudo deserializar el contenido de {recursoJson}");
+                                }
+                            }
+                        }
+                    }
+
+                    Console.WriteLine($"¡Carga finalizada con {_eventos.Count} eventos totales!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar los eventos: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                CrearEventosPorDefecto();
+            }
+        }
+

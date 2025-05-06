@@ -72,7 +72,7 @@ bueno ahora que estoy implementando los eventos para cada clase, me toca cambiar
 personaje desde el gestor de eventos (cosa que no puede ser) y me toca crear la interface para que herede la clase prencipal asi se puede hacer modificaciones a cada clase de
 forma individual no importa que tenga cada clase 
 
-Dios me salve cuando me toque segregar los eventos para cada clase ya que no tengo idea de como hacerlo jajajajjaja
+
 
 */
         

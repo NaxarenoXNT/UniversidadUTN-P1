@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using practicarUNI.Juego;
+using practicarUNI.JuegoRPG.Padres;
 
 namespace practicarUNI.Juego.padres
 {
@@ -11,20 +12,27 @@ namespace practicarUNI.Juego.padres
         public bool JugadorDerrotado = false;
         public bool DefenderceDeEnemigo=false;
 
+
         public string Nombre{get;}
+
+
         protected double Jugador_VidaToatal{get; set;}
         protected double Jugador_VidaActual{get; set;}
         protected double Jugador_Daño{get; set;}
         protected double Jugador_Defensa{get; set;}
-        public int Dinero_Jugador{get; set;} //esto es para que el jugador pueda tener dinero y comprar cosas en la tienda
 
+
+        public int Dinero_Jugador{get; set;} //esto es para que el jugador pueda tener dinero y comprar cosas en la tienda
         protected int Jugador_Nivel{get; set;}
         protected int Jugador_Progreso_Nivel{get; set;}
         public int Nivel => Jugador_Nivel;   //para que pueda ser accedido desde el inicio
 
+
+        public Dictionary<string ,Items> Inventario { get; set; } = new Dictionary<string, Items>(); //para que el jugador tenga acceso a los items del juego y un inventario
         public Dictionary<string,Action<Enemigo>> Acciones{get; set;}= new Dictionary<string, Action<Enemigo>>(); //basicamente guarda un string(nombre del metodo) y recibe un enmigo para ejecutar un metodo
         public Dictionary<string,Action> AccionesSinObjetivo{get; set;} = new Dictionary<string, Action>();  //lo mismo que el otro diccionario pero este no requiere de un enemigo
         protected Dictionary<string, Action<object>> ModificadoresEstado = new Dictionary<string, Action<object>>(); //se utiliza para modificar atributos de los posibles eventos
+
 
         public Personaje(string nombre ,double VidaInicial, double DañoInicial, double DefensaInicial)
         {
@@ -33,6 +41,7 @@ namespace practicarUNI.Juego.padres
             Jugador_VidaActual = VidaInicial;
             Jugador_Daño = DañoInicial;
             Jugador_Defensa = DefensaInicial;
+            Dinero_Jugador = 100;
             Jugador_Nivel = 1;
             Jugador_Progreso_Nivel = 0;
     
@@ -97,6 +106,8 @@ namespace practicarUNI.Juego.padres
             }
         }
 
+
+        //modificadores de estado por eventos
         protected virtual void InicializarModificadoresEstado()
         {
             //aca se agregan los nuevos atributos 
@@ -167,6 +178,29 @@ namespace practicarUNI.Juego.padres
                     Console.WriteLine("Error: Valor de experiencia inválido.");
                 }
             };
+            ModificadoresEstado["Dinero"] = valor => 
+            {
+                try 
+                {
+                    Dinero_Jugador += Convert.ToInt32(valor);
+                }
+                catch 
+                {
+                    Console.WriteLine("Error: Valor de dinero inválido.");
+                }
+            };
+            ModificadoresEstado["Inventario"] = valor => 
+            {
+                try 
+                {
+                    Items item = (Items)valor;
+                    AgregarItem(item);
+                }
+                catch 
+                {
+                    Console.WriteLine("Error: Valor de inventario inválido.");
+                }
+            };
         }
         public virtual void ModificarEstado(string atributo, object valor)
         {
@@ -200,5 +234,80 @@ namespace practicarUNI.Juego.padres
             }
         }
 
+
+
+        //funciones para el inventario del jugador
+        public void AgregarItem(Items item)
+        {
+            if (Inventario.ContainsKey(item.Nombre))
+            {
+                if (Inventario[item.Nombre].EsObjetounico)
+                {
+                    Inventario[item.Nombre].Cantidad += item.Cantidad;
+                }
+                else
+                {
+                    Console.WriteLine("Ya tenés este ítem y no es stackeable.");
+                }
+            }
+            else
+            {
+                Inventario[item.Nombre] = item;
+            }
+        }
+        public bool RemoverItem(string nombre, int cantidad)
+        {
+            if (Inventario.ContainsKey(nombre))
+            {
+                if (Inventario[nombre].Cantidad >= cantidad)
+                {
+                    Inventario[nombre].Cantidad -= cantidad;
+                    if (Inventario[nombre].Cantidad == 0)
+                        Inventario.Remove(nombre);
+                    return true;
+                }
+            }
+            return false; // No se pudo remover
+        }
+        public void UsarItem(string nombre)
+        {
+            if (Inventario.ContainsKey(nombre))
+            {
+                Items item = Inventario[nombre];
+                if (item.EsConsumible)
+                {
+                    Console.WriteLine($"Usaste el ítem: {item.Nombre}");
+                    // Aca tendria agregar la logica para aplicar el efecto del item
+                    RemoverItem(nombre, 1); // Remueve 1 unidad del item
+                }
+                else
+                {
+                    Console.WriteLine($"No puedes usar el ítem: {item.Nombre} porque no es consumible.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"No tienes el ítem: {nombre} en tu inventario.");
+            }
+        }
+        public void MostrarInventario()
+        {
+            Console.WriteLine("Inventario:");
+            foreach (var item in Inventario.Values)
+            {
+                Console.WriteLine($"- {item.Nombre} (Cantidad: {item.Cantidad})");
+                Console.WriteLine($"  Descripcion: {item.Descripcion}");
+                if (item.Precio > 0)
+                {
+                    Console.WriteLine($"  Precio: {item.Precio} monedas");
+                }
+                if (item.EsConsumible)
+                {
+                    Console.WriteLine("  Tipo: Consumible");
+                }
+            }
+        }
+
     }
+            
 }

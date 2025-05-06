@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using practicarUNI.Juego.padres;
+using practicarUNI.Juego.TipoDeEnemigos;
 
 namespace practicarUNI.Juego
 {
@@ -13,7 +14,7 @@ namespace practicarUNI.Juego
 
         static GeneradorDeEnemigos()
         {
-            tiposDeEnemigos.Add(typeof(Zombie));
+            tiposDeEnemigos.Add(typeof(NoMuerto));
             tiposDeEnemigos.Add(typeof(Humano));
             tiposDeEnemigos.Add(typeof(Elemental));
         }
@@ -34,3 +35,5 @@ namespace practicarUNI.Juego
 
     }
 }
+//una ves que haya creado los distintos tipos de enemigos los tengo que agregar y si estoy piola 
+// tendria que crear distintas listas de enemigos ya que no quiero que salgan no muertos en lugares donde no tendria que tner no muertos

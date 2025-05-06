@@ -7,11 +7,14 @@ namespace practicarUNI.Eventos
 {
     public class Evento
     {
+        public bool Disponible { get; set; }
         public string ID{get; set;}
         public string Descripcion{get; set;}
         public List<OpcionEvento> Opciones{get; set;}
         public string Ubicacion{get; set;}
+        public int NivelMinimo { get; set; }
 
+        
         public Evento(string id, string descripcion, List<OpcionEvento> opciones, string ubicacion = "")
         {
             ID = id;

@@ -18,6 +18,7 @@ namespace practicarUNI.JuegoRPG.Clases_Iniciales
 
             AccionesSinObjetivo.Add("Curarse", () => Curarse());
             AccionesSinObjetivo.Add("Defenderse", () => Defenderse());
+            AccionesSinObjetivo.Add("MostrarInventario", () => MostrarInventario());
         }
 
         protected override void Atacar(Enemigo enemigo)

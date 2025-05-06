@@ -8,6 +8,7 @@ using practicarUNI.Juego.padres;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using practicarUNI.JuegoRPG.Padres;
 
 namespace practicarUNI.JuegoRPG.TodoEventos
 {
@@ -17,6 +18,8 @@ namespace practicarUNI.JuegoRPG.TodoEventos
         public int Salud { get; set; }
         public int Experiencia{ get; set; }
         public List<string> EventosCompletados { get; set; } = new List<string>();
+        public Ciudad CiudadActual { get; set; }
+        public Dictionary<string, Ciudad> CiudadesDisponibles { get; set; } = new();
         public Personaje JugadorActual { get; set; }
         
 
@@ -24,7 +27,19 @@ namespace practicarUNI.JuegoRPG.TodoEventos
         {
             JugadorActual = jugador;
         }
-    }
+
+        /*
+        public void CargarCiudades()
+        {
+            Ciudad kalta = GestorDeRecursos.CargarDesdeJson<Ciudad>("Ciudades/Kalta.json");
+            if (kalta != null)
+            {
+                CiudadesDisponibles[kalta.Nombre] = kalta;
+                CiudadActual = kalta;  // Inicia en Kalta
+            }
+        }
+        */
+        }
 
 
 
@@ -50,9 +65,9 @@ namespace practicarUNI.JuegoRPG.TodoEventos
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var recursos = assembly.GetManifestResourceNames();
-                
+
                 Console.WriteLine("Buscando recursos disponibles...");
-                
+
                 if (recursos.Length == 0)
                 {
                     Console.WriteLine("¡No se encontraron recursos incrustados!");
@@ -64,30 +79,51 @@ namespace practicarUNI.JuegoRPG.TodoEventos
                     {
                         Console.WriteLine($"- {recurso}");
                     }
-                    
-                    // Intenta cargar el primer recurso que contiene el json
-                    string eventoResourceName = recursos.FirstOrDefault(r => r.EndsWith("eventos.json"));
-                    
-                    if (eventoResourceName != null)
+
+                    // Busca recursos que contengan "ArchivosEventos" y terminen en ".json"
+                    var eventosResources = recursos.Where(r => r.Contains("ArchivosEventos") && r.EndsWith(".json"));
+
+                    if (!eventosResources.Any())
                     {
-                        Console.WriteLine($"Intentando cargar: {eventoResourceName}");
-                        using (Stream stream = assembly.GetManifestResourceStream(eventoResourceName))
-                        using (StreamReader reader = new StreamReader(stream))
+                        Console.WriteLine("No se encontraron recursos JSON de eventos.");
+                        CrearEventosPorDefecto();
+                        return;
+                    }
+
+                    foreach (var recursoJson in eventosResources)
+                    {
+                        Console.WriteLine($"Intentando cargar: {recursoJson}");
+
+                        using (Stream? stream = assembly.GetManifestResourceStream(recursoJson))
                         {
-                            string json = reader.ReadToEnd();
-                            List<Evento> listaEventos = System.Text.Json.JsonSerializer.Deserialize<List<Evento>>(json);
-                            foreach (var evento in listaEventos)
+                            if (stream == null)
                             {
-                                _eventos[evento.ID] = evento;
+                                Console.WriteLine($"No se pudo abrir el recurso: {recursoJson}");
+                                continue;
                             }
-                            Console.WriteLine($"¡Se cargaron {_eventos.Count} eventos correctamente!");
+
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                string json = reader.ReadToEnd();
+                                List<Evento>? listaEventos = System.Text.Json.JsonSerializer.Deserialize<List<Evento>>(json);
+
+                                if (listaEventos != null)
+                                {
+                                    foreach (var evento in listaEventos)
+                                    {
+                                        _eventos[evento.ID] = evento;
+                                    }
+                                    Console.WriteLine($"Se cargaron {listaEventos.Count} eventos desde {recursoJson}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"No se pudo deserializar el contenido de {recursoJson}");
+                                }
+                            }
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine("No se encontró ningún recurso que termine con 'eventos.json'");
-                        CrearEventosPorDefecto();
-                    }
+
+                    Console.WriteLine($"¡Carga finalizada con {_eventos.Count} eventos totales!");
                 }
             }
             catch (Exception ex)
@@ -97,6 +133,8 @@ namespace practicarUNI.JuegoRPG.TodoEventos
                 CrearEventosPorDefecto();
             }
         }
+
+
         private void CrearEventosPorDefecto()
         {
             // dependiendo de la clase que elijas se genera un evento principal
@@ -239,4 +277,5 @@ namespace practicarUNI.JuegoRPG.TodoEventos
 
         
     }
+    //correccion de como se utilizan los ids de los eventos ya que tengo que pasarlos de string a id o preparar un acople para diferenciar entre ellos
 }

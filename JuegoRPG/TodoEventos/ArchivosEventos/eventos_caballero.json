@@ -1,0 +1,194 @@
+[
+  {
+    "ID": "inicio_caballero",
+    "Descripcion": "Te despiertas en los barracones de la Orden de los Caballeros. Tu capitán te ha asignado una misión importante: investigar los rumores de un dragón en las montañas cercanas.",
+    "Opciones": [
+      {
+        "Texto": "Aceptar la misión con honor",
+        "Resultado": {
+          "CambiosEstado": {
+            "Defensa": 5
+          },
+          "SiguienteEventoID": "preparacion_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      },
+      {
+        "Texto": "Pedir más información antes de partir",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "informacion_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Barracones de la Orden"
+  },
+  {
+    "ID": "preparacion_caballero",
+    "Descripcion": "Te diriges a la armería para prepararte. El armero te ofrece mejorar tu equipamiento antes de partir.",
+    "Opciones": [
+      {
+        "Texto": "Mejorar tu escudo",
+        "Resultado": {
+          "CambiosEstado": {
+            "Defensa": 10
+          },
+          "SiguienteEventoID": "partida_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      },
+      {
+        "Texto": "Mejorar tu espada",
+        "Resultado": {
+          "CambiosEstado": {
+            "Daño": 10
+          },
+          "SiguienteEventoID": "partida_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Armería de la Orden"
+  },
+  {
+    "ID": "evento_caballero_honor",
+    "Descripcion": "Te encuentras con un torneo de caballeros en una aldea cercana. Podrías participar para ganar honor y recompensas.",
+    "Opciones": [
+      {
+        "Texto": "Participar en el torneo",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "",
+          "CompletarEvento": true,
+          "IniciarCombate": true
+        }
+      },
+      {
+        "Texto": "Observar desde las gradas",
+        "Resultado": {
+          "CambiosEstado": {
+            "Defensa": 5
+          },
+          "SiguienteEventoID": "",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Torneo de caballeros"
+  },
+  {
+    "ID": "evento_caballero_duelo",
+    "Descripcion": "Un caballero rival te desafía a un duelo para probar tu valía. Su arrogancia es evidente, pero también su habilidad con la espada.",
+    "Opciones": [
+      {
+        "Texto": "Aceptar el duelo honorable",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "",
+          "CompletarEvento": true,
+          "IniciarCombate": true
+        }
+      },
+      {
+        "Texto": "Rechazar cortésmente y ofrecer una alianza",
+        "Resultado": {
+          "CambiosEstado": {
+            "Defensa": 8,
+            "Dinero": -20
+          },
+          "SiguienteEventoID": "",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Campo de entrenamiento"
+  },
+  {
+    "ID": "informacion_caballero",
+    "Descripcion": "Tu capitán te explica que varios aldeanos han desaparecido cerca de las montañas y se cree que un dragón acecha en las cavernas. La misión es de alta prioridad para el reino.",
+    "Opciones": [
+      {
+        "Texto": "Solicitar compañeros para la misión",
+        "Resultado": {
+          "CambiosEstado": {
+            "Defensa": 10
+          },
+          "SiguienteEventoID": "preparacion_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      },
+      {
+        "Texto": "Aceptar la misión en solitario",
+        "Resultado": {
+          "CambiosEstado": {
+            "Daño": 10
+          },
+          "SiguienteEventoID": "preparacion_caballero",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Sala del Consejo de la Orden"
+  },
+  {
+    "ID": "partida_caballero",
+    "Descripcion": "Con tu equipamiento listo, partes hacia las montañas. El camino es largo y peligroso, pero tu determinación es firme.",
+    "Opciones": [
+      {
+        "Texto": "Tomar el camino principal",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "evento_caballero_honor",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      },
+      {
+        "Texto": "Tomar un atajo por el bosque",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "evento_comun_combate",
+          "CompletarEvento": true,
+          "IniciarCombate": false
+        }
+      }
+    ],
+    "Ubicacion": "Camino a las montañas"
+  },
+  {
+    "ID": "evento_comun_combate",
+    "Descripcion": "Monstruos an aparecido en el bosque cercano. Debes decidir si enfrentarlos o evitarlos.",
+    "Opciones": [
+      {
+        "Texto": "Aceptar el desafio",
+        "Resultado": {
+          "CambiosEstado": {},
+          "SiguienteEventoID": "",
+          "IniciarCombate": true,
+          "CompletarEvento": true
+        }
+      },
+      {
+        "Texto": "Evitar el combate",
+        "Resultado": {
+          "CambiosEstado": {
+            "Dinero": -100
+          },
+          "SiguienteEventoID": "",
+          "IniciarCombate": false,
+          "CompletarEvento": true
+        }
+      }
+    ],
+    "Ubicacion": "Punto de encuentro secreto"
+  }
+]

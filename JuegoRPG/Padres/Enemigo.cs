@@ -3,30 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using practicarUNI.JuegoRPG.Padres;
 
 namespace practicarUNI.Juego.padres
 {
-    public class Enemigo
+    public abstract class Enemigo
     {
         public bool EnemigoDerrotado= false;
         public bool EstaDefendiendose { get; set; } = false;
+        public bool DropItem { get; set; }
+        public bool TieneItem { get; set; }
+
+
         protected double Enemigo_VidaToatal{get; set;}
         protected double Enemigo_VidaActual{get; set;}
         protected double Enemigo_Daño{get; set;}
         protected double Enemigo_Defensa{get; set;}
+        public double VidaActual => Enemigo_VidaActual;  // lo mismo con esta
+
+
 
         protected string Enemigo_Nombre{get; set;}
         public string Nombre => Enemigo_Nombre;      //estas simplemente estan declaradas para que sean accesibles desde funciones de gestion
-        public double VidaActual => Enemigo_VidaActual;  // lo mismo con esta
 
 
         public int Enemigo_Nivel{get; set;}
         public int Nivel => Enemigo_Nivel;
-        
-        
         protected int Enemigo_ExpDrop{get; set;}
 
+
+
         public List<Enemigo> ListaEnemigos = new List<Enemigo>();
+        public List<Items> ListaItemsEnemigos = new List<Items>();
         public Dictionary<string, Action<Personaje>> Acciones_Enemigo{get; set;} //misma logica que con el diccionario del jugador
         
 
@@ -47,8 +55,6 @@ namespace practicarUNI.Juego.padres
         {
          
         }    
-
-
         protected void SubirNivelEnemigo(int Jugador_Nivel)
         {
             int minimo = Jugador_Nivel - 5;
@@ -61,7 +67,6 @@ namespace practicarUNI.Juego.padres
 
             Enemigo_ExpDrop = CalcularExpDrop();
         }
-
         protected void DropXP(Personaje personaje)
         {
         personaje.RecibirXP(Enemigo_ExpDrop);
@@ -71,7 +76,6 @@ namespace practicarUNI.Juego.padres
         {
             return 25 + (Enemigo_Nivel * 5);
         }
-
         protected void EscaladoNivel_Enemigo()
         {
             Enemigo_Daño+= Enemigo_Nivel*(10);
@@ -79,7 +83,6 @@ namespace practicarUNI.Juego.padres
             Enemigo_VidaActual+= Enemigo_Nivel*(20);
             Enemigo_Defensa+= Enemigo_Nivel*(1.25);
         }
-
         public virtual void Atacar(Personaje personaje)
         {
             //que la modifique cada subclase 
@@ -89,8 +92,6 @@ namespace practicarUNI.Juego.padres
         {
 
         }
-        
-
         public void RecibirDaño(double Jugador_Daño, Personaje personaje)
         {
             double DañoMitigado= Jugador_Daño;
@@ -114,163 +115,30 @@ namespace practicarUNI.Juego.padres
                 DropXP(personaje); 
             }
         }
-
         public virtual void EnemigoSeCura()
         {
             double curacion = 20+(5*Enemigo_Nivel);
             Enemigo_VidaActual+= curacion;
             Console.WriteLine($"El enemigo se curo un total de {curacion} y ahora posee {Enemigo_VidaActual} puntos de vida.");
         }
+
+
+        protected void DropItemEnemigo()
+        {
+            if (DropItem)
+            {
+                Console.WriteLine($"El enemigo dejo caer un item: {ListaItemsEnemigos[0].Nombre}");
+                TieneItem = true;
+            }
+            else
+            {
+                Console.WriteLine("El enemigo no ha dejado caer nada.");
+                TieneItem = false;
+            }
+        }
         
 
     }
 
-    
-    //me falta independizar cada subclase(tal como realize con las clases de personaje) (ya casi esta)
-
-
-
-
-
-
-
-    public class Zombie: Enemigo
-    {
-
-        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(100.0, 40.0, 0);
-
-        public Zombie(int Jugador_Nivel): base("Zombie" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
-        {
-            SubirNivelEnemigo(Jugador_Nivel);
-            EscaladoNivel_Enemigo();
-            Enemigo_ExpDrop = CalcularExpDrop();
-        }
-        public override void Atacar(Personaje personaje)
-        {
-            Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño, this);
-        }
-        public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
-        {
-         Atacar(personaje);
-        }
-    }
-
-
-
-
-
-
-    public class Humano: Enemigo
-    {
-        private int cargasCuracionEnemigo=0;
-        private int cargasParaLlamarAliado=1;
-
-        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(100.0, 40.0, 20.0);
-        public Humano(int Jugador_Nivel): base("humano" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
-        {
-            SubirNivelEnemigo(Jugador_Nivel);
-            EscaladoNivel_Enemigo();
-            Enemigo_ExpDrop = CalcularExpDrop();
-        }
-        public override void Atacar(Personaje personaje)
-        {
-            Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño, this);
-        }
-
-        public override void DefenderceEnemigo()
-        {
-            Console.WriteLine("El enemigo se prepara para recibir menos daño.");
-            EstaDefendiendose = true;
-        }
-
-        public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
-        {
-            bool NoMasCuras = cargasCuracionEnemigo >= 2;
-            bool NoMasAliados = cargasParaLlamarAliado < 1;
-
-            
-            if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.50 && !NoMasCuras)
-            {
-                EnemigoSeCura();
-                cargasCuracionEnemigo++;
-            }
-            
-            else if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.25 && !NoMasAliados)
-            {
-                LLamarAliado(enemigos, personaje.Nivel);
-                cargasParaLlamarAliado--;
-            }
-            
-            else if (Enemigo_VidaActual <= Enemigo_VidaToatal * 0.50 && NoMasCuras && NoMasAliados)
-            {
-                DefenderceEnemigo();
-            }
-            
-            else
-            {
-                Atacar(personaje);
-            }
-        }
-
-
-        public void LLamarAliado(List<Enemigo> enemigos ,int Jugador_Nivel)
-        {
-            Console.WriteLine("¡¡El enemigo está llamando refuerzos!!");
-
-            Enemigo nuevoAliado = GeneradorDeEnemigos.GenerarEnemigoAleatorio(Jugador_Nivel);
-            enemigos.Add(nuevoAliado);
-        
-            Console.WriteLine("Un nuevo humano se ha unido al combate.");
-            
-        }
-    }
-
-
-
-
-
-
-
-
-
-    public class Elemental: Enemigo
-    {
-        private int cargasCuracionEnemigo=0;
-        private int cargasParaLlamarAliado=1;
-
-        public static(double vida, double daño, double defensa) Estadisticasbase{get;} =(50.0, 200.0, 0);
-
-        public Elemental(int Jugador_Nivel): base("Elemental" , Estadisticasbase.vida, Estadisticasbase.daño, Estadisticasbase.defensa)
-        {
-            SubirNivelEnemigo(Jugador_Nivel);
-            EscaladoNivel_Enemigo();
-            Enemigo_ExpDrop = CalcularExpDrop();
-        }
-        public override void Atacar(Personaje personaje)
-        {
-            Console.WriteLine("El Enemigo realizo un ataque!");
-            personaje.RecibirDaño(Enemigo_Daño, this);
-        }
-        public override void ElegirAccion_Enemigo(Personaje personaje, List<Enemigo> enemigos)
-        {
-            bool NoMasCuras = cargasCuracionEnemigo>=2;
-            bool NoMasAliados = cargasParaLlamarAliado<1;
-
-
-            
-            if(Enemigo_VidaActual <= Enemigo_VidaToatal*0.50 && !NoMasCuras)
-            {
-                EnemigoSeCura();
-                cargasCuracionEnemigo++;
-            }
-            else
-            {
-                Atacar(personaje);
-            }
-            
-            
-        }
-    }
-}
+    //tengo que crear las pools de items para cada clase de enemigo y despues crear los items... o mejor al reves jajajja
+}// aparte de eso voy a volver a las clases de humano a humanoide elemental la dejo igual y zombie a no-muerto para crear mas diverisdad de enemigos

@@ -1,0 +1,169 @@
+[
+    {
+      "ID": "inicio_asesino",
+      "Descripcion": "Entre las sombras del Gremio de Asesinos, recibes un pergamino sellado con un nuevo contrato. Un noble corrupto debe ser eliminado.",
+      "Opciones": [
+        {
+          "Texto": "Aceptar el contrato inmediatamente",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": 50
+            },
+            "SiguienteEventoID": "preparacion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Investigar más sobre el objetivo",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "investigacion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Gremio de Asesinos"
+    },
+    {
+      "ID": "preparacion_asesino",
+      "Descripcion": "En tu guarida, preparas tu equipo para el contrato. Debes elegir cuidadosamente tus herramientas.",
+      "Opciones": [
+        {
+          "Texto": "Llevar venenos adicionales",
+          "Resultado": {
+            "CambiosEstado": {
+              "Daño": 15
+            },
+            "SiguienteEventoID": "infiltracion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Llevar equipo de sigilo avanzado",
+          "Resultado": {
+            "CambiosEstado": {
+              "Defensa": 8
+            },
+            "SiguienteEventoID": "infiltracion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Guarida del Asesino"
+    },
+    {
+      "ID": "evento_asesino_contrato",
+      "Descripcion": "Un mensajero te entrega un contrato de alto riesgo pero con gran recompensa.",
+      "Opciones": [
+        {
+          "Texto": "Aceptar el contrato",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": true
+          }
+        },
+        {
+          "Texto": "Negociar un pago mayor",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": 100
+            },
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": true
+          }
+        }
+      ],
+      "Ubicacion": "Punto de encuentro secreto"
+    },
+    {
+      "ID": "evento_asesino_sigilo",
+      "Descripcion": "Descubres que una caravana de mercaderes transporta un valioso cargamento. Podrías intentar infiltrarte durante la noche.",
+      "Opciones": [
+        {
+          "Texto": "Atacar silenciosamente durante la noche",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": true
+          }
+        },
+        {
+          "Texto": "Infiltrarse sin ser detectado",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": 80
+            },
+            "SiguienteEventoID": "",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Campamento de mercaderes"
+    },
+    {
+      "ID": "investigacion_asesino",
+      "Descripcion": "Tus contactos te revelan que el noble es más peligroso de lo que parece. Tiene guardias entrenados y es experto en detectar venenos comunes.",
+      "Opciones": [
+        {
+          "Texto": "Preparar un veneno especial",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": -30,
+              "Daño": 20
+            },
+            "SiguienteEventoID": "preparacion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Planear una emboscada nocturna",
+          "Resultado": {
+            "CambiosEstado": {
+              "Defensa": 10
+            },
+            "SiguienteEventoID": "preparacion_asesino",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Taberna del Puerto"
+    },
+    {
+      "ID": "infiltracion_asesino",
+      "Descripcion": "Te acercas a la mansión del noble. Los guardias patrullan el perímetro y notas varias entradas posibles.",
+      "Opciones": [
+        {
+          "Texto": "Infiltrarse por los tejados",
+          "Resultado": {
+            "CambiosEstado": {},
+            "SiguienteEventoID": "evento_asesino_sigilo",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        },
+        {
+          "Texto": "Disfrazarse y entrar por la puerta principal",
+          "Resultado": {
+            "CambiosEstado": {
+              "Dinero": -20
+            },
+            "SiguienteEventoID": "evento_asesino_contrato",
+            "CompletarEvento": true,
+            "IniciarCombate": false
+          }
+        }
+      ],
+      "Ubicacion": "Mansión del noble"
+    }
+  ]
